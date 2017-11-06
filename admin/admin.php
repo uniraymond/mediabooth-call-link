@@ -7,18 +7,23 @@
 ?>
 
 <?php
+/**
+ * @package MediaboothCallLinkPlugin
+ */
+
+use Inc\Option;
 
 add_action('admin_menu', 'register_mcl_page');
 add_action('admin_init', 'mcl_options_init');
 
-$mcl_options = mcl_get_options();
+$mcl_options = Option::mcl_get_options();
 
 $mcl_options['active'] = isset($mcl_options['action']) ? 1 : 0;
 $mcl_options['classic'] = isset($mcl_options['classic']) ? 1 : 0;
 
 $plugin_title = apply_filters('mcl_plugin_title', 'Mediabooth Call Link');
 
-$mcl_updated = set_basic_options();
+$mcl_updated = Option::set_basic_options();
 
 function register_mcl_page() {
     global $plugin_title;
@@ -50,7 +55,7 @@ function mcl_admin_setting_page() {
         ?>
     </div>
 
-<form method="post" action="options.php" class="mcl-container">
+<form method="post" action="./options.php" class="mcl-container">
     <?php settings_fields('mcl_options'); ?>
     <table class="form-table">
         <tr valign="top">
@@ -150,45 +155,6 @@ function mcl_admin_setting_page() {
 ?>
 
 <?php
-function mcl_get_options() { // Checking and setting the default options
-    if(!get_option('mcl')) {
-        $default_options = array(
-            'active',
-            'number' => '',
-            'color' => '#009900',
-            'appearance' => 'right',
-            'show' => '',
-            'version' => MCL_VERSION
-        );
-
-        // add option to 'mcl'
-        add_option('mcl',$default_options);
-        $mcl_options = get_option('mcl');
-    }
-
-    $mcl_options = get_option('mcl');
-
-    return $mcl_options;
-}
-
-function set_basic_options() {
-    if(!array_key_exists('version', get_option('mcl'))) {
-        $mcl_options = get_option('mcl');
-        $mcl_options['active'] = isset($mcl_options['active']) ? 1 : 0;
-        $default_options = array(
-            'active' => $mcl_options['active'],
-            'number' => $mcl_options['number'],
-            'color' => $mcl_options['color'],
-            'appearance' => $mcl_options['appearance'],
-            'show' => $mcl_options['show'],
-            'version' => MCL_VERSION
-        );
-        update_option('mcl',$default_options);
-        return true;  // plugin was updated
-    } else {
-        return false; // no update
-    }
-}
 
 function mcl_get_scripts() {
     if (is_admin()) {
