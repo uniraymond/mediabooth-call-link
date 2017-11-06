@@ -1,0 +1,17 @@
+{
+    "name": "raymond/mediabooth-call-link",
+    "description": "A call button pluging",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Raymond Feng",
+            "email": "uniraymond@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {"Inc\\": "./inc"}
+    }
+}
