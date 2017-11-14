@@ -15,15 +15,15 @@ if(get_option('mcl') && !is_admin()) {
         return $output;
     }
 
-
     $mcl_options = get_option('mcl');
-    if(isset($mcl_options['active'])) $enabled = $mcl_options['active']; else $enabled = 0;
+
+    if(isset($mcl_options['activity'])) $enabled = $mcl_options['activity']; else $enabled = 0;
     if($enabled == '1') {
         // it's enabled so put footer stuff here
         function mcl_head() {
             $mcl_options = get_option('mcl');
             if(isset($mcl_options['classic'])) $classic = $mcl_options['classic']; else $classic = 0;
-            $credits 	 = "\n<!-- Call Now Button ".mcl_VERSION." by Jerry Rietveld (callnowbutton.com) -->\n";
+            $credits 	 = "";
             $ButtonExtra = "";
             if($classic == 1) {
 
@@ -40,7 +40,7 @@ if(get_option('mcl') && !is_admin()) {
             } else {
 
                 // NEW BUTTON DESIGN
-                $credits = "\n<!-- Call Now Button ".mcl_VERSION." by Jerry Rietveld (callnowbutton.com) -->\n";
+                $credits = "";
                 $ButtonShape = "width:65px; height:65px; border-radius:80px; border:2px solid #fff; bottom:15px;";
                 if($mcl_options['appearance'] == 'full') {
                     $ButtonAppearance = "width:100%;left:0;bottom:0;height:60px;border-top:1px solid ".changeColor($mcl_options['color'], 'lighter')."; border-bottom:1px solid ".changeColor($mcl_options['color'], 'darker').";";
@@ -53,7 +53,7 @@ if(get_option('mcl') && !is_admin()) {
                 $credits = $credits ."<style>";
                 $credits .= "#callnowbutton {display:none;} @media screen and (max-width:650px){#callnowbutton {display:block; position:fixed; text-decoration:none; z-index:9999;";
                 $credits .= $ButtonAppearance;
-                $credits .= "background:url(data:image/svg+xml;base64,".svg(changeColor($mcl_options['color'], 'darker') ).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+//                $credits .= "background:url(data:image/svg+xml;base64,".svg(changeColor($mcl_options['color'], 'darker') ).") center/50px 50px no-repeat ".$mcl_options['color'].";";
                 $credits .= "}" . $ButtonExtra . "}";
                 $credits .= "</style>\n";
             }
@@ -70,39 +70,61 @@ if(get_option('mcl') && !is_admin()) {
 
             switch (date('N')) {
                 case 1:
-                    $monday = explode('-', $alloptions['monday']);
-                    $start_time = strtotime('today ' . trim($monday[0]));
-                    $finish_time = strtotime('today ' . trim($monday[1]));
+                    $monday = '';
+                    if ($alloptions['monday']) {
+                        $monday = explode('-', $alloptions['monday']);
+                        $start_time = strtotime('today ' . trim($monday[0]));
+                        $finish_time = strtotime('today ' . trim($monday[1]));
+                    }
                     break;
                 case 2:
-                    $tuesday = explode('-', $alloptions['tuesday']);
-                    $start_time = strtotime('today ' . trim($tuesday[0]));
-                    $finish_time = strtotime('today ' . trim($tuesday[1]));
+                    $tuesday = '';
+                    if ($alloptions['tuesday']) {
+                        $tuesday = explode('-', $alloptions['tuesday']);
+                        $start_time = strtotime('today ' . trim($tuesday[0]));
+                        $finish_time = strtotime('today ' . trim($tuesday[1]));
+                    }
                     break;
                 case 3:
-                    $wednesday = explode('-', $alloptions['wednesday']);
-                    $start_time = strtotime('today ' . trim($wednesday[0]));
-                    $finish_time = strtotime('today ' . trim($wednesday[1]));
+                    $wednesday = '';
+                    if ($alloptions['wednesday']) {
+                        $wednesday = explode('-', $alloptions['wednesday']);
+                        $start_time = strtotime('today ' . trim($wednesday[0]));
+                        $finish_time = strtotime('today ' . trim($wednesday[1]));
+                    }
                     break;
                 case 4:
-                    $thursday = explode('-', $alloptions['thursday']);
-                    $start_time = strtotime('today ' . trim($thursday[0]));
-                    $finish_time = strtotime('today ' . trim($thursday[1]));
+                    $thursday = '';
+                    if ($alloptions['thursday']) {
+                        $thursday = explode('-', $alloptions['thursday']);
+                        $start_time = strtotime('today ' . trim($thursday[0]));
+                        $finish_time = strtotime('today ' . trim($thursday[1]));
+                    }
                     break;
                 case 5:
-                    $friday = explode('-', $alloptions['friday']);
-                    $start_time = strtotime('today ' . trim($friday[0]));
-                    $finish_time = strtotime('today ' . trim($friday[1]));
+                    $friday = '';
+                    if ($alloptions['friday']) {
+                        $friday = explode('-', $alloptions['friday']);
+                        $start_time = strtotime('today ' . trim($friday[0]));
+                        $finish_time = strtotime('today ' . trim($friday[1]));
+                    }
+
                     break;
                 case 6:
-                    $saturday = explode('-', $alloptions['saturday']);
-                    $start_time = strtotime('today ' . trim($saturday[0]));
-                    $finish_time = strtotime('today ' . trim($saturday[1]));
+                    $saturday = '';
+                    if ($alloptions['saturday']) {
+                        $saturday = explode('-', $alloptions['saturday']);
+                        $start_time = strtotime('today ' . trim($saturday[0]));
+                        $finish_time = strtotime('today ' . trim($saturday[1]));
+                    }
                     break;
                 case 7:
-                    $sunday = explode('-', $alloptions['sunday']);
-                    $start_time = strtotime('today ' . trim($sunday[0]));
-                    $finish_time = strtotime('today ' . trim($sunday[1]));
+                    $sunday = '';
+                    if ($alloptions['sunday']) {
+                        $sunday = explode('-', $alloptions['sunday']);
+                        $start_time = strtotime('today ' . trim($sunday[0]));
+                        $finish_time = strtotime('today ' . trim($sunday[1]));
+                    }
                     break;
 
             }
@@ -118,9 +140,9 @@ if(get_option('mcl') && !is_admin()) {
                 $limited = 0;
             }
 
-            if($alloptions['tracking'] == '1') {
+            if(array_key_exists('tracking', $alloptions) && $alloptions['tracking'] == '1') {
                 $tracking = "onclick=\"_gaq.push(['_trackEvent', 'Contact', 'Call Now Button', 'Phone']);\"";
-            } elseif($alloptions['tracking'] == '2') {
+            } elseif(array_key_exists('tracking', $alloptions) && $alloptions['tracking'] == '2') {
                 $tracking = "onclick=\"ga('send', 'event', 'Contact', 'Call Now Button', 'Phone');\"";
             } else {
                 $tracking = "";
