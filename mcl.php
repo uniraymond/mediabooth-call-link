@@ -1,12 +1,4 @@
 <?php
-/**
- * Created by Media Booth.
- * User: Raymond F.
- * Date: 2017-10-17
- */
-?>
-
-<?php
 if(get_option('mcl') && !is_admin()) {
 
     // Color functions to calculate borders
@@ -197,4 +189,21 @@ if(get_option('mcl') && !is_admin()) {
         }
         add_action('wp_footer', 'mcl_footer');
     }
+
+
+    function mcl_get_scripts() {
+        wp_deregister_script('jquery');
+        wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js', false, '1.8.1');
+        wp_enqueue_script('jquery');
+
+        wp_deregister_script('jquerymagnificpopupjs');
+        wp_register_script('jquerymagnificpopupjs', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js', false, '1.1.0');
+        wp_enqueue_script('jquerymagnificpopupjs');
+
+        wp_deregister_style('jquerymagnificpopupcss');
+        wp_register_style('jquerymagnificpopupcss', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css', false, '1.1.0');
+        wp_enqueue_script('jquerymagnificpopupcss');
+
+    }
+    add_action('init', 'mcl_get_scripts');
 }

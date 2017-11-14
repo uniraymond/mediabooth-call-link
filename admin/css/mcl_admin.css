@@ -1,0 +1,54 @@
+.wrap {
+    max-width: 1050px;
+}
+.version {
+    font-weight: 200;
+}
+.form-table td p.description,
+.inline-helper {
+    font-size: 12px;
+}
+.mcl-url a {
+    text-decoration: none;
+    font-weight: 200;
+    font-size: 28px;
+    color: black;
+}
+.mcl-center {
+    text-align: center;
+}
+#settings {
+    display: none;
+}
+.mcl-container input[type="radio"] + label {
+    font-weight: 300;
+}
+.mcl-container input[type="radio"]:checked + label {
+    font-weight: bold;
+}
+.radio-item {
+    margin: 10px 0;
+}
+p.submit,
+#cnb_settings {
+    display: inline-block;
+}
+#cnb_settings {
+    margin-left: 25px;
+    cursor: pointer;
+}
+.check-settings,
+.mcl-switch-back {
+    color: #0073aa;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.red-background {
+    background-color: #ffdbdb !important;
+}
+
+@media screen and (min-width: 960px) {
+    .radio-item {
+        margin: 5px 0;
+    }
+}

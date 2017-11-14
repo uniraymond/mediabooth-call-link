@@ -1,13 +1,4 @@
 <?php
-/**
- * Created by Media Booth.
- * User: Raymond F.
- * Date: 2017-10-17
- */
-?>
-
-<?php
-
 add_action('admin_menu', 'register_mcl_page');
 add_action('admin_init', 'mcl_options_init');
 
@@ -32,13 +23,14 @@ function mcl_admin_style() {
 
 function mcl_options_init() {
     register_setting('mcl_options', 'mcl');
-    wp_register_style('mcl_style', MCL_PLUGIN_DIR . 'admin/css/mcl_admin.css', false, MCL_VERSION, 'all');
+    wp_register_style('mcl_admin_style', MCL_PLUGIN_DIR . 'admin/css/mcl_admin.css', false, MCL_VERSION, 'all');
 }
 
 function mcl_admin_setting_page() {
     global $mcl_options;
     global $plugin_title;
     global $mcl_updated;
+    var_dump($mcl_options);
 ?>
 
     <div class="wrap">
@@ -81,6 +73,9 @@ function mcl_admin_setting_page() {
                     <label title="full" for="appearance4">Full bottom</label>
                 </div>
             </td>
+        </tr>
+        <tr valign="top"><th scope="row">Button color:</th>
+            <td><input name="mcl[color]" type="text" value="<?php echo $mcl_options['color']; ?>" class="mcl-color-field" data-default-color="#009900" /></td>
         </tr>
         <tr valign="top" class="appearance">
             <th scope="row">Limit appearance:</th>
@@ -147,9 +142,7 @@ function mcl_admin_setting_page() {
 </form>
 <?php
 }
-?>
 
-<?php
 function mcl_get_options() { // Checking and setting the default options
     if(!get_option('mcl')) {
         $default_options = array(
@@ -190,23 +183,10 @@ function set_basic_options() {
     }
 }
 
-function mcl_get_scripts() {
-    if (is_admin()) {
-        return;
-    }
+add_action( 'admin_enqueue_scripts', 'mcl_enqueue_color_picker' ); // add the color picker
 
-    wp_deregister_script('jquery');
-    wp_register_script('jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js', false, '1.8.1');
-    wp_enqueue_script('jquery');
-
-    wp_deregister_script('jquerymagnificpopupjs');
-    wp_register_script('jquerymagnificpopupjs', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js', false, '1.1.0');
-    wp_enqueue_script('jquerymagnificpopupjs');
-
-    wp_deregister_style('jquerymagnificpopupcss');
-    wp_register_style('jquerymagnificpopupcss', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css', false, '1.1.0');
-    wp_enqueue_script('jquerymagnificpopupcss');
-
+function mcl_enqueue_color_picker( $hook_suffix ) {
+    wp_enqueue_style( 'wp-color-picker' );
+    wp_enqueue_script( 'mcl-script-handle', MCL_PLUGIN_URL . '/mcl.js', array( 'wp-color-picker' ), MCL_VERSION, true );
 }
-add_action('init', 'mcl_get_scripts');
 ?>
