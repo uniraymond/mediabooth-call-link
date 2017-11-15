@@ -1,0 +1,26 @@
+
+@media screen and (max-width: 650px) {
+
+    #call-me-back {
+        color: #FFF;
+    }
+
+    #call-me-back form label {
+        color: #FFF;
+    }
+
+    #call-me-back span.wpcf7-not-valid-tip {
+        color: #CCC
+    }
+
+    #call-me-back form input {
+        width: 100%;
+    }
+
+    #call-me-button {
+        background-color: #059AE5;
+    }
+    a#callnowbutton {
+        background-color: #059AE5;
+    }
+}

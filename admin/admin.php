@@ -23,7 +23,7 @@ function mcl_admin_style() {
 
 function mcl_options_init() {
     register_setting('mcl_options', 'mcl');
-    wp_register_style('mcl_admin_style', MCL_PLUGIN_DIR . 'admin/css/mcl_admin.css', false, MCL_VERSION, 'all');
+    wp_register_style('mcl_admin_style', MCL_PLUGIN_DIR . 'admin/assets/mcl_admin.css', false, MCL_VERSION, 'all');
 }
 
 function mcl_admin_setting_page() {
@@ -187,6 +187,6 @@ add_action( 'admin_enqueue_scripts', 'mcl_enqueue_color_picker' ); // add the co
 
 function mcl_enqueue_color_picker( $hook_suffix ) {
     wp_enqueue_style( 'wp-color-picker' );
-    wp_enqueue_script( 'mcl-script-handle', MCL_PLUGIN_URL . '/mcl.js', array( 'wp-color-picker' ), MCL_VERSION, true );
+    wp_enqueue_script( 'mcl-script-handle', MCL_PLUGIN_URL . '/admin/assets/mcl_admin.js', array( 'wp-color-picker' ), MCL_VERSION, true );
 }
 ?>

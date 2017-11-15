@@ -149,9 +149,30 @@ if(get_option('mcl') && !is_admin()) {
             }
 
             if (in_array($today_day, $holidays) || $current_time >= $finish_time || $current_time <= $start_time) {
-                $callLink = '<a href="#call-me-back" id="callnowbutton" class="call-me-back-button">&nbsp;</a>';
-                $callLink .= '<div id="call-me-back" class="call-me-back-popup mfp-hide" >'
-                    . do_shortcode("[contact-form-7 id=\"7\" title=\"Call Me Back\"]") . '</div>';
+                $callLink = '';
+            ?>
+                <a href="#call-me-back" id="callnowbutton" class="call-me-back-button">&nbsp;</a>
+                <div id="call-me-back" class="call-me-back-popup mfp-hide" >
+                <form action="/#wpcf7-f47-o1" method="post" class="wpcf7-form" novalidate="novalidate">
+                    <div style="display: none;">
+                    <input type="hidden" name="_wpcf7" value="47">
+                    <input type="hidden" name="_wpcf7_version" value="4.9">
+                    <input type="hidden" name="_wpcf7_locale" value="en_US">
+                    <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f47-o1">
+                    <input type="hidden" name="_wpcf7_container_post" value="0">
+                    </div>
+                    <h3>It is out of our business hour, please leave your contact details and our friendly staff will contact you ASAP.</h3>
+                    <p><label> Your Name (required)<br>
+                        <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your Name:"></span> </label></p>
+                    <p><label> Your Phone Number (required)<br>
+                        <span class="wpcf7-form-control-wrap your-phonenumber"><input type="tel" name="your-phonenumber" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-required wpcf7-validates-as-tel callback_number" id="callback_number" aria-required="true" aria-invalid="false" placeholder="Your Phone Number:"></span> </label></p>
+                    <p><label> Comments<br>
+                        <span class="wpcf7-form-control-wrap your-comments"><input type="text" name="your-comments" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false" placeholder="Your Comments:"></span> </label></p>
+                    <p><input type="submit" value="Send" class="wpcf7-form-control wpcf7-submit call-me-button" id="call-me-button"><span class="ajax-loader"></span></p>
+                    <div class="wpcf7-response-output wpcf7-display-none"></div>
+                </form>
+            </div>
+            <?php
                 $callmenow = false;
             } else {
                 $callLink = '<a href="tel:'.$alloptions['number'].'" id="callnowbutton" '.$tracking.'>&nbsp;</a>';
@@ -164,50 +185,16 @@ if(get_option('mcl') && !is_admin()) {
             } else {
                 echo $callLink;
             }
-            ?>
 
-            <script>
+            wp_deregister_script('mcl-js');
+            wp_register_script('mcl-js', MCL_PLUGIN_URL . '/mcl.js', false, '0.0.1');
+            wp_enqueue_script('mcl-js');
 
-                $(document).ready(function() {
-                    $('.call-me-back-button').magnificPopup({
-                        type: 'inline',
-                        midClick: true
-                    });
-
-                });
-
-            </script>
-            <style>
-
-                <?php if (!$callmenow): ?>
-                @media screen and (max-width: 650px) {
-
-                    #call-me-back {
-                        color: #FFF;
-                    }
-
-                    #call-me-back form label {
-                        color: #FFF;
-                    }
-
-                    #call-me-back span.wpcf7-not-valid-tip {
-                        color: #CCC
-                    }
-
-                    #call-me-back form input {
-                        width: 100%;
-                    }
-
-                    #call-me-button {
-                        background-color: #059AE5;
-                    }
-                    a#callnowbutton {
-                        background-color: #059AE5;
-                    }
-                }
-                <?php endif; ?>
-            </style>
-        <?php
+            if (!$callmenow) {
+                wp_deregister_style('link-style');
+                wp_register_style('link-style', MCL_PLUGIN_URL . '/link_style.css', false, '0.0.1');
+                wp_enqueue_style('link-style');
+            }
         }
         add_action('wp_footer', 'mcl_footer');
     }
@@ -224,7 +211,7 @@ if(get_option('mcl') && !is_admin()) {
 
         wp_deregister_style('jquerymagnificpopupcss');
         wp_register_style('jquerymagnificpopupcss', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css', false, '1.1.0');
-        wp_enqueue_script('jquerymagnificpopupcss');
+        wp_enqueue_style('jquerymagnificpopupcss');
 
     }
     add_action('init', 'mcl_get_scripts');
