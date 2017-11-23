@@ -30,6 +30,7 @@ function mcl_admin_setting_page() {
     global $plugin_title;
     global $mcl_updated;
     $mcl_option_position = isset($mcl_options['app_position']) ? $mcl_options['app_position'] : 'right';
+    $mcl_option_display = isset($mcl_options['display']) ? $mcl_options['display'] : '';
 ?>
 
     <div class="wrap">
@@ -73,14 +74,16 @@ function mcl_admin_setting_page() {
                 </div>
             </td>
         </tr>
+
         <tr valign="top"><th scope="row">Button color:</th>
             <td><input name="mcl[color]" type="text" value="<?php echo $mcl_options['color']; ?>" class="mcl-color-field" data-default-color="#009900" /></td>
         </tr>
+
         <tr valign="top" class="appearance">
             <th scope="row">Limit appearance:</th>
-            <td>
-                <input type="text" name="mcl[display]" value="<?php echo $mcl_options['display']; ?>" />
-                <p class="description">Enter IDs of the posts &amp; pages the Call Now Button should appear on (leave blank for all).</p>
+            <td><?php echo $mcl_option_display; ?>
+                <input type="text" name="mcl[display]" value="<?php echo $mcl_option_display; ?>" />
+                <p class="description">Enter IDs of the posts &amp; pages the Media Booth Call Line should appear on or display all by ids are none.</p>
             </td>
         </tr>
         <!-- custom setup working hours -->
