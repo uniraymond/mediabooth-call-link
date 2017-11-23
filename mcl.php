@@ -66,7 +66,14 @@ if(get_option('mcl') && !is_admin()) {
             $credits = $credits ."<style>";
             $credits .= "#call_link {display:none;} @media screen and (max-width:650px){#call_link {display:block; position:fixed; text-decoration:none; z-index:9999;";
             $credits .= $button_app_position;
-            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+
+            if ($mcl_options['emailafterhour']) {
+                $style1 = $stye2 = '';
+	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color, $style1, $stye2).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+            } else {
+	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+            }
+
             $credits .= "}" . $button_extra . "}";
             $credits .= "</style>\n";
 
