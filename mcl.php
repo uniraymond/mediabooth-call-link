@@ -43,19 +43,30 @@ if(get_option('mcl') && !is_admin()) {
             $mcl_options = get_option('mcl');
 
             $button_style = "width:65px; height:65px; border-radius:80px; border:2px solid #fff; bottom:15px;";
+	        $border_top_color = modifyColor($mcl_options['color'], 'lighter');
+	        $border_bottom_color = modifyColor($mcl_options['color'], 'darker');
 
-            if($mcl_options['app_position'] == 'full') {
-                $button_app_position = "width:100%;left:0;bottom:0;height:60px;border-top:1px solid ".modifyColor($mcl_options['color'], 'lighter')."; border-bottom:1px solid ".modifyColor($mcl_options['color'], 'darker').";";
-                $button_extra = "body {padding-bottom:60px;}";
+            switch ($mcl_options['app_position']) {
+                case 'full':
+	                $button_app_position = "width:100%;left:0;bottom:0;height:60px;border-top:1px solid " . $border_top_color . "; border-bottom:1px solid " . $border_bottom_color . ";";
+	                $button_extra = "body {padding-bottom:60px;}";
+                    break;
+                case 'left':
+	                $button_app_position = $button_style . "left:20px;";
+	                break;
+                case 'middle':
+	                $button_app_position = $button_style . "left:50%; margin-left:-33px;";
+                    break;
+                case 'right':
+                case 'default':
+                    $button_app_position = $button_style . "right:20px;";
+                    break;
             }
-            elseif($mcl_options['app_position'] == 'left'  ) { $button_app_position = $button_style . "left:20px;"; }
-            elseif($mcl_options['app_position'] == 'middle') { $button_app_position = $button_style . "left:50%; margin-left:-33px;"; }
-            else 									   { $button_app_position = $button_style . "right:20px;"; }
 
             $credits = $credits ."<style>";
             $credits .= "#call_link {display:none;} @media screen and (max-width:650px){#call_link {display:block; position:fixed; text-decoration:none; z-index:9999;";
             $credits .= $button_app_position;
-            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg(modifyColor($mcl_options['color'], 'darker') ).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color).") center/50px 50px no-repeat ".$mcl_options['color'].";";
             $credits .= "}" . $button_extra . "}";
             $credits .= "</style>\n";
 
@@ -217,7 +228,11 @@ if(get_option('mcl') && !is_admin()) {
     add_action('init', 'mcl_get_scripts');
 
 
-	function loadsvg($button_color) {
+	function loadsvg(
+	        $button_color,
+            $button_phone_icon_path_bg = "M256,7.9C117.4,7.9,5,119.8,5,257.9c0,52.3,16.1,100.8,43.6,140.9l-33,98.5l98.9-32.8
+	c40.3,27.4,89,43.5,141.4,43.5c138.6,0,251-111.9,251-250C507,119.8,394.6,7.9,256,7.9z",
+            $button_phone_icon_path="M7.104 13.032l6.504-6.505c0.896-0.895 2.334-0.678 3.1 0.35l5.563 7.8 c0.738 1 0.5 2.531-0.36 3.426l-4.74 4.742c2.361 3.3 5.3 6.9 9.1 10.699c3.842 3.8 7.4 6.7 10.7 9.1 l4.74-4.742c0.897-0.895 2.471-1.026 3.498-0.289l7.646 5.455c1.025 0.7 1.3 2.2 0.4 3.105l-6.504 6.5 c0 0-11.262 0.988-25.925-13.674C6.117 24.3 7.1 13 7.1 13") {
 //		$phone_icon = '<path d="M256,7.9C117.4,7.9,5,119.8,5,257.9c0,52.3,16.1,100.8,43.6,140.9l-33,98.5l98.9-32.8
 //	c40.3,27.4,89,43.5,141.4,43.5c138.6,0,251-111.9,251-250C507,119.8,394.6,7.9,256,7.9z" fill="'.$button_color.'"/><path d="M375.7,332.5c-19.3-19.3-40-35.6-40-35.6l-30.2,30.2L184.9,206.4l30.2-30.2c0,0-16.3-20.7-35.6-40
 //	c-19.3-19.3-40-35.6-40-35.6s-36.1,33.2-38.6,59.6c-3.3,35.3,34.1,99.5,92.8,158.1s122.8,96,158.1,92.8
@@ -225,8 +240,7 @@ if(get_option('mcl') && !is_admin()) {
 //		$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 60">' . $phone_icon . '</svg>';
 //		return base64_encode($svg_icon);
 
-		$phone_icon = '<path d="M256,7.9C117.4,7.9,5,119.8,5,257.9c0,52.3,16.1,100.8,43.6,140.9l-33,98.5l98.9-32.8
-	c40.3,27.4,89,43.5,141.4,43.5c138.6,0,251-111.9,251-250C507,119.8,394.6,7.9,256,7.9z" fill="'.$button_color.'"/><path d="M7.104 13.032l6.504-6.505c0.896-0.895 2.334-0.678 3.1 0.35l5.563 7.8 c0.738 1 0.5 2.531-0.36 3.426l-4.74 4.742c2.361 3.3 5.3 6.9 9.1 10.699c3.842 3.8 7.4 6.7 10.7 9.1 l4.74-4.742c0.897-0.895 2.471-1.026 3.498-0.289l7.646 5.455c1.025 0.7 1.3 2.2 0.4 3.105l-6.504 6.5 c0 0-11.262 0.988-25.925-13.674C6.117 24.3 7.1 13 7.1 13" fill="#fff"/>';
+		$phone_icon = '<path d= fill="' . $button_phone_icon_path_bg . '"' .$button_color.'"/><path d="'. $button_phone_icon_path .'" fill="#fff"/>';
 		$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 60">' . $phone_icon . '</svg>';
 		return base64_encode($svg_icon);
 	}
