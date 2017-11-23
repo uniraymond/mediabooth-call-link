@@ -29,6 +29,7 @@ function mcl_admin_setting_page() {
     global $mcl_options;
     global $plugin_title;
     global $mcl_updated;
+    $mcl_option_position = isset($mcl_options['app_position']) ? $mcl_options['app_position'] : 'right';
 ?>
 
     <div class="wrap">
@@ -55,19 +56,19 @@ function mcl_admin_setting_page() {
         <tr valign="top"><th scope="row">Position</th>
             <td class="appearance">
                 <div class="radio-item">
-                    <input type="radio" id="appearance1" name="mcl[app_position]" value="right" <?php checked('right', $mcl_options['app_position']); ?>>
+                    <input type="radio" id="appearance1" name="mcl[app_position]" value="right" <?php checked('right', $mcl_option_position); ?>>
                     <label title="right" for="appearance1">Right corner</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance2" name="mcl[app_position]" value="left" <?php checked('left', $mcl_options['app_position']); ?>>
+                    <input type="radio" id="appearance2" name="mcl[app_position]" value="left" <?php checked('left', $mcl_option_position); ?>>
                     <label title="left" for="appearance2">Left corner</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance3" name="mcl[app_position]" value="middle" <?php checked('middle', $mcl_options['app_position']); ?>>
+                    <input type="radio" id="appearance3" name="mcl[app_position]" value="middle" <?php checked('middle', $mcl_option_position); ?>>
                     <label title="middle" for="appearance3">Center bottom</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance4" name="mcl[app_position]" value="full" <?php checked('full', $mcl_options['app_position']); ?>>
+                    <input type="radio" id="appearance4" name="mcl[app_position]" value="full" <?php checked('full', $mcl_option_position); ?>>
                     <label title="full" for="appearance4">Full bottom</label>
                 </div>
             </td>
