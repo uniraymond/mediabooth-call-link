@@ -5,7 +5,6 @@ add_action('admin_init', 'mcl_options_init');
 $mcl_options = mcl_get_options();
 
 $mcl_options['active'] = isset($mcl_options['action']) ? 1 : 0;
-$mcl_options['classic'] = isset($mcl_options['classic']) ? 1 : 0;
 
 $plugin_title = apply_filters('mcl_plugin_title', 'Mediabooth Call Link');
 
@@ -30,7 +29,6 @@ function mcl_admin_setting_page() {
     global $mcl_options;
     global $plugin_title;
     global $mcl_updated;
-    var_dump($mcl_options);
 ?>
 
     <div class="wrap">
@@ -57,19 +55,19 @@ function mcl_admin_setting_page() {
         <tr valign="top"><th scope="row">Position</th>
             <td class="appearance">
                 <div class="radio-item">
-                    <input type="radio" id="appearance1" name="mcl[appearance]" value="right" <?php checked('right', $mcl_options['appearance']); ?>>
+                    <input type="radio" id="appearance1" name="mcl[app_position]" value="right" <?php checked('right', $mcl_options['app_position']); ?>>
                     <label title="right" for="appearance1">Right corner</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance2" name="mcl[appearance]" value="left" <?php checked('left', $mcl_options['appearance']); ?>>
+                    <input type="radio" id="appearance2" name="mcl[app_position]" value="left" <?php checked('left', $mcl_options['app_position']); ?>>
                     <label title="left" for="appearance2">Left corner</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance3" name="mcl[appearance]" value="middle" <?php checked('middle', $mcl_options['appearance']); ?>>
+                    <input type="radio" id="appearance3" name="mcl[app_position]" value="middle" <?php checked('middle', $mcl_options['app_position']); ?>>
                     <label title="middle" for="appearance3">Center bottom</label>
                 </div>
                 <div class="radio-item">
-                    <input type="radio" id="appearance4" name="mcl[appearance]" value="full" <?php checked('full', $mcl_options['appearance']); ?>>
+                    <input type="radio" id="appearance4" name="mcl[app_position]" value="full" <?php checked('full', $mcl_options['app_position']); ?>>
                     <label title="full" for="appearance4">Full bottom</label>
                 </div>
             </td>
@@ -80,7 +78,7 @@ function mcl_admin_setting_page() {
         <tr valign="top" class="appearance">
             <th scope="row">Limit appearance:</th>
             <td>
-                <input type="text" name="mcl[show]" value="<?php echo $mcl_options['show']; ?>" />
+                <input type="text" name="mcl[display]" value="<?php echo $mcl_options['display']; ?>" />
                 <p class="description">Enter IDs of the posts &amp; pages the Call Now Button should appear on (leave blank for all).</p>
             </td>
         </tr>
@@ -149,8 +147,8 @@ function mcl_get_options() { // Checking and setting the default options
             'active',
             'number' => '',
             'color' => '#009900',
-            'appearance' => 'right',
-            'show' => '',
+            'app_position' => 'right',
+            'display' => '',
             'version' => MCL_VERSION
         );
 
@@ -172,11 +170,12 @@ function set_basic_options() {
             'active' => $mcl_options['active'],
             'number' => $mcl_options['number'],
             'color' => $mcl_options['color'],
-            'appearance' => $mcl_options['appearance'],
-            'show' => $mcl_options['show'],
+            'app_position' => $mcl_options['app_position'],
+            'display' => $mcl_options['display'],
             'version' => MCL_VERSION
         );
         update_option('mcl',$default_options);
+
         return true;  // plugin was updated
     } else {
         return false; // no update
