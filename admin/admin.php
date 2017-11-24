@@ -126,10 +126,10 @@ function mcl_admin_setting_page() {
             </td>
         </tr>
         <tr valign="top" class="classic">
-            <th scope="row">After Hour Email:</th>
+            <th scope="row">Short Code from Contact Form7:</th>
             <td>
                 <div class="after_email">
-                    <input id="classic" name="mcl[emailafterhour]" type="email" value="<?php echo $mcl_options['emailafterhour']; ?>" />
+                    <input id="classic" name="mcl[emailafterhour]" type="text" value="<?php echo $mcl_options['emailafterhour']; ?>" />
                     <label title="After Hours Callback Email" for="emailafterhour">After Hours Callback Email</label>
                 </div>
             </td>

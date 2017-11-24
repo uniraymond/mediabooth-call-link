@@ -164,28 +164,16 @@ if(get_option('mcl') && !is_admin()) {
             if (in_array($today_day, $holidays) || $current_time >= $finish_time || $current_time <= $start_time) {
                 $callLink = '';
             ?>
-
+            <?php
+                $contact_form = isset($alloptions['emailafterhour']) ? $alloptions['emailafterhour'] : '';
+                if ($contact_form) :
+            ?>
             <a href="#call-me-back" id="call_link" class="call-me-back-button"><img width="40px" class="call_link_image" src= "<?php echo MCL_PLUGIN_URL; ?>/email.png" alt="" /></span></a>
             <div id="call-me-back" class="call-me-back-popup mfp-hide" >
-                <form action="/#wpcf7-f47-o1" method="post" class="wpcf7-form" novalidate="novalidate">
-                    <div style="display: none;">
-                    <input type="hidden" name="_wpcf7" value="47">
-                    <input type="hidden" name="_wpcf7_version" value="4.9">
-                    <input type="hidden" name="_wpcf7_locale" value="en_US">
-                    <input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f47-o1">
-                    <input type="hidden" name="_wpcf7_container_post" value="0">
-                    </div>
-                    <h3>It is out of our business hour, please leave your contact details and our friendly staff will contact you ASAP.</h3>
-                    <p><label> Your Name (required)<br>
-                        <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false" placeholder="Your Name:"></span> </label></p>
-                    <p><label> Your Phone Number (required)<br>
-                        <span class="wpcf7-form-control-wrap your-phonenumber"><input type="tel" name="your-phonenumber" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-required wpcf7-validates-as-tel callback_number" id="callback_number" aria-required="true" aria-invalid="false" placeholder="Your Phone Number:"></span> </label></p>
-                    <p><label> Comments<br>
-                        <span class="wpcf7-form-control-wrap your-comments"><input type="text" name="your-comments" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false" placeholder="Your Comments:"></span> </label></p>
-                    <p><input type="submit" value="Send" class="wpcf7-form-control wpcf7-submit call-me-button" id="call-me-button"><span class="ajax-loader"></span></p>
-                    <div class="wpcf7-response-output wpcf7-display-none"></div>
-                </form>
+                <?php echo do_shortcode($contact_form); ?>
             </div>
+            <?php endif; ?>
+
             <?php
                 $callmenow = false;
             } else {
