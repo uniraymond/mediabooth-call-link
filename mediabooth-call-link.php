@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Mediabooth Call Link
- * Plugin URI: http://mediabooth.com.au/plugins/mediabooth-call-link
- * Author: Raymond F.
+ * Plugin URI: http://mediabooth.com.au
+ * Author: Mediabooth - Raymond F.
  * Version: 0.0.1
  * License: GPLv2
  * Description: A call link plugin for wordpress mobile size contact call or send email.

@@ -41,6 +41,7 @@ function mcl_options_init() {
  */
 function mcl_admin_setting_page() {
     global $mcl_options;
+    $mcl_option_activity =  isset($mcl_options['activity']) ? $mcl_options['activity'] : '';
     $mcl_option_position = isset($mcl_options['app_position']) ? $mcl_options['app_position'] : 'right';
     $mcl_option_display = isset($mcl_options['display']) ? $mcl_options['display'] : '';
 ?>
@@ -48,7 +49,7 @@ function mcl_admin_setting_page() {
     <div class="wrap">
         <h1>Media Booth Call Link <span class="version">v.<?php echo MCL_VERSION;?></span></h1>
         <?php
-        if (!$mcl_options['activity'] == 1) {
+        if (!$mcl_option_activity == 1) {
             echo "<div class='notice-error notice'><p>The call link plugin is currently <b>inactive</b>.</p></div>";
         }
         ?>
@@ -60,7 +61,7 @@ function mcl_admin_setting_page() {
         <tr valign="top">
             <th scope="row">Link Status:</th>
             <td class="activated">
-                <input id="activated" name="mcl[activity]" type="checkbox" value="1" <?php checked('1', $mcl_options['activity']); ?> /> <label title="Enable" for="activated">Enabled</label> &nbsp; &nbsp;
+                <input id="activated" name="mcl[activity]" type="checkbox" value="1" <?php checked('1', $mcl_option_activity); ?> /> <label title="Enable" for="activated">Enabled</label> &nbsp; &nbsp;
             </td>
         </tr>
         <tr valign="top"><th scope="row">Phone number:</th>
@@ -95,7 +96,7 @@ function mcl_admin_setting_page() {
             <th scope="row">Limit appearance:</th>
             <td><?php echo $mcl_option_display; ?>
                 <input type="text" name="mcl[display]" value="<?php echo $mcl_option_display; ?>" />
-                <p class="description">Add IDs such as (1,4,5) of the posts or pages, if want to display on all pages just leave it empty.</p>
+                <p class="description">Add IDs such as (1,4,5) of the posts or pages, leave empty for displaying on all of pages.</p>
             </td>
         </tr>
         <!-- custom setup working hours -->
@@ -165,6 +166,15 @@ function mcl_get_options() { // Checking and setting the default options
             'color' => '#009900',
             'app_position' => 'right',
             'display' => '',
+            'monday' => '',
+            'tuesday' => '',
+            'wednesday' => '',
+            'thursday' => '',
+            'friday' => '',
+            'saturday' => '',
+            'sunday' => '',
+            'holiday' => '',
+            'emailafterhour' => '',
             'version' => MCL_VERSION
         );
 
@@ -185,9 +195,18 @@ function set_basic_options() {
         $default_options = array(
             'active' => $mcl_options['active'],
             'number' => $mcl_options['number'],
-            'color' => $mcl_options['color'],
             'app_position' => $mcl_options['app_position'],
+            'color' => $mcl_options['color'],
             'display' => $mcl_options['display'],
+            'monday' => '',
+            'tuesday' => '',
+            'wednesday' => '',
+            'thursday' => '',
+            'friday' => '',
+            'saturday' => '',
+            'sunday' => '',
+            'holiday' => '',
+            'emailafterhour' => '',
             'version' => MCL_VERSION
         );
         update_option('mcl',$default_options);
