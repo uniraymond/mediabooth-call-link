@@ -1,4 +1,5 @@
 <?php
+$callmenow = '';
 if(get_option('mcl') && !is_admin()) {
 
     // Color functions to calculate borders
@@ -35,12 +36,133 @@ if(get_option('mcl') && !is_admin()) {
     }
 
     if($enabled == '1') {
+
+        // checking holiday, after hours
+	    /**
+	     * @return array (call_link: phone or email button,
+         * call_me_now: return phone, email or noaction,
+         * display_button: weather will diplay the button )
+	     */
+        function check_email_phone() {
+
+	        $alloptions = get_option('mcl');
+	        date_default_timezone_set('Australia/Brisbane');
+	        $callmenow = 'phone';
+	        $display_button = false;
+
+	        $start_time = $finish_time = 0;
+
+	        //get start and finish time
+	        switch (date('N')) {
+		        case 1:
+			        $monday = '';
+			        if ($alloptions['monday']) {
+				        $monday = explode('-', $alloptions['monday']);
+				        $start_time = strtotime('today ' . trim($monday[0]));
+				        $finish_time = strtotime('today ' . trim($monday[1]));
+			        }
+			        break;
+		        case 2:
+			        $tuesday = '';
+			        if ($alloptions['tuesday']) {
+				        $tuesday = explode('-', $alloptions['tuesday']);
+				        $start_time = strtotime('today ' . trim($tuesday[0]));
+				        $finish_time = strtotime('today ' . trim($tuesday[1]));
+			        }
+			        break;
+		        case 3:
+			        $wednesday = '';
+			        if ($alloptions['wednesday']) {
+				        $wednesday = explode('-', $alloptions['wednesday']);
+				        $start_time = strtotime('today ' . trim($wednesday[0]));
+				        $finish_time = strtotime('today ' . trim($wednesday[1]));
+			        }
+			        break;
+		        case 4:
+			        $thursday = '';
+			        if ($alloptions['thursday']) {
+				        $thursday = explode('-', $alloptions['thursday']);
+				        $start_time = strtotime('today ' . trim($thursday[0]));
+				        $finish_time = strtotime('today ' . trim($thursday[1]));
+			        }
+			        break;
+		        case 5:
+			        $friday = '';
+			        if ($alloptions['friday']) {
+				        $friday = explode('-', $alloptions['friday']);
+				        $start_time = strtotime('today ' . trim($friday[0]));
+				        $finish_time = strtotime('today ' . trim($friday[1]));
+			        }
+
+			        break;
+		        case 6:
+			        $saturday = '';
+			        if ($alloptions['saturday']) {
+				        $saturday = explode('-', $alloptions['saturday']);
+				        $start_time = strtotime('today ' . trim($saturday[0]));
+				        $finish_time = strtotime('today ' . trim($saturday[1]));
+			        }
+			        break;
+		        case 7:
+			        $sunday = '';
+			        if ($alloptions['sunday']) {
+				        $sunday = explode('-', $alloptions['sunday']);
+				        $start_time = strtotime('today ' . trim($sunday[0]));
+				        $finish_time = strtotime('today ' . trim($sunday[1]));
+			        }
+			        break;
+
+	        }
+
+	        // get all holidays from setting
+	        $holidays = array_map('trim', explode(',', $alloptions['holiday']));
+	        $today_day = date('d/m');
+	        $current_time = strtotime('now');
+
+	        // check there is limit appearance on setting page
+	        if(isset($alloptions['display']) && $alloptions['display'] != "") {
+		        $display = explode(',', str_replace(' ', '' ,$alloptions['display']));
+		        $limited = 1;
+	        } else {
+		        $limited = 0;
+	        }
+
+	        $call_link = '';
+	        // checking the holiday or start - finish working time
+	        if (in_array($today_day, $holidays) || $current_time >= $finish_time || $current_time <= $start_time) {
+
+		        $contact_form = isset($alloptions['emailafterhour']) ? $alloptions['emailafterhour'] : '';
+		        if ($contact_form) {
+			        $call_link = '<a href="#call-me-back" id="call_link" class="call-me-back-button"></a>';
+			        $call_link .= '<div id="call-me-back" class="call-me-back-popup mfp-hide" >';
+			        $call_link .=  do_shortcode($contact_form);
+			        $call_link .= '</div>';
+		        }
+
+		        $callmenow = 'email';
+	        } else {
+		        $call_link = '<a href="tel:'.$alloptions['number'].'" id="call_link"></a>';
+	        }
+
+	        if($limited) {
+		        if(is_single($display) || is_page($display)) {
+			        $display_button = true;
+		        }
+	        } else {
+		        $display_button = true;
+	        }
+
+	        $items = ['call_link' => $call_link, 'call_me_now' => $callmenow, 'display_button' => $display_button];
+	        return $items;
+        }
+
         // it's enabled so put footer stuff here
         function mcl_top() {
 	        $credits 	 = "";
 	        $button_extra = "";
 
             $mcl_options = get_option('mcl');
+            $get_email_phone = check_email_phone();
 
             $button_style = "width:65px; height:65px; border-radius:80px; border:2px solid #fff; bottom:15px;";
 	        $border_top_color = modifyColor($mcl_options['color'], 'lighter');
@@ -50,6 +172,7 @@ if(get_option('mcl') && !is_admin()) {
 	        if (isset($mcl_options['app_position'])) {
                 $app_position = $mcl_options['app_position'];
             }
+            // display button position
             switch ($app_position) {
                 case 'full':
 	                $button_app_position = "width:100%;left:0;bottom:0;height:60px;border-top:1px solid " . $border_top_color . "; border-bottom:1px solid " . $border_bottom_color . ";";
@@ -61,7 +184,7 @@ if(get_option('mcl') && !is_admin()) {
                 case 'middle':
 	                $button_app_position = $button_style . "left:50%; margin-left:-33px;";
                     break;
-                case 'right': var_dump('teting');
+                case 'right':
                 case 'default':
                     $button_app_position = $button_style . "right:20px;";
                     break;
@@ -71,12 +194,18 @@ if(get_option('mcl') && !is_admin()) {
             $credits .= "#call_link {display:none;} @media screen and (max-width:650px){#call_link {display:block; position:fixed; text-decoration:none; z-index:9999;";
             $credits .= $button_app_position;
 
-            if ($mcl_options['emailafterhour']) {
-                $style1 = $stye2 = '';
-                $stye2 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE2LjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPg0KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCINCgkgd2lkdGg9IjQ4NS4yMTFweCIgaGVpZ2h0PSI0ODUuMjExcHgiIHZpZXdCb3g9IjAgMCA0ODUuMjExIDQ4NS4yMTEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDQ4NS4yMTEgNDg1LjIxMTsiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPHBhdGggZD0iTTQ4NS4yMTEsMzYzLjkwNmMwLDEwLjYzNy0yLjk5MiwyMC40OTgtNy43ODUsMjkuMTc0TDMyNC4yMjUsMjIxLjY3bDE1MS41NC0xMzIuNTg0DQoJCWM1Ljg5NSw5LjM1NSw5LjQ0NiwyMC4zNDQsOS40NDYsMzIuMjE5VjM2My45MDZ6IE0yNDIuNjA2LDI1Mi43OTNsMjEwLjg2My0xODQuNWMtOC42NTMtNC43MzctMTguMzk3LTcuNjQyLTI4LjkwOC03LjY0Mkg2MC42NTENCgkJYy0xMC41MjQsMC0yMC4yNzEsMi45MDUtMjguODg5LDcuNjQyTDI0Mi42MDYsMjUyLjc5M3ogTTMwMS4zOTMsMjQxLjYzMWwtNDguODA5LDQyLjczNGMtMi44NTUsMi40ODctNi40MSwzLjcyOS05Ljk3OCwzLjcyOQ0KCQljLTMuNTcsMC03LjEyNS0xLjI0Mi05Ljk4LTMuNzI5bC00OC44Mi00Mi43MzZMMjguNjY3LDQxNS4yM2M5LjI5OSw1LjgzNCwyMC4xOTcsOS4zMjksMzEuOTgzLDkuMzI5aDM2My45MTENCgkJYzExLjc4NCwwLDIyLjY4Ny0zLjQ5NSwzMS45ODMtOS4zMjlMMzAxLjM5MywyNDEuNjMxeiBNOS40NDgsODkuMDg1QzMuNTU0LDk4LjQ0LDAsMTA5LjQyOSwwLDEyMS4zMDV2MjQyLjYwMg0KCQljMCwxMC42MzcsMi45NzgsMjAuNDk4LDcuNzg5LDI5LjE3NGwxNTMuMTgzLTE3MS40NEw5LjQ0OCw4OS4wODV6Ii8+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8Zz4NCjwvZz4NCjxnPg0KPC9nPg0KPGc+DQo8L2c+DQo8L3N2Zz4NCg==";
-	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color, $style1, $stye2).") center/50px 50px no-repeat ".$mcl_options['color'].";";
-            } else {
-	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($border_bottom_color).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+	        $style1 = $style2 = '';
+	        // display email or phone icon
+            if ($get_email_phone['call_me_now'] == 'email' && $get_email_phone['display_button']) {
+	            $style1 = "";
+	            $style2 = "M485.211,363.906c0,10.637-2.992,20.498-7.785,29.174L324.225,221.67l151.54-132.584 c5.895,9.355,9.446,20.344,9.446,32.219V363.906z M242.606,252.793l210.863-184.5c-8.653-4.737-18.397-7.642-28.908-7.642H60.651 c-10.524,0-20.271,2.905-28.889,7.642L242.606,252.793z M301.393,241.631l-48.809,42.734c-2.855,2.487-6.41,3.729-9.978,3.729 c-3.57,0-7.125-1.242-9.98-3.729l-48.82-42.736L28.667,415.23c9.299,5.834,20.197,9.329,31.983,9.329h363.911 c11.784,0,22.687-3.495,31.983-9.329L301.393,241.631z M9.448,89.085C3.554,98.44,0,109.429,0,121.305v242.602 c0,10.637,2.978,20.498,7.789,29.174l153.183-171.44L9.448,89.085z";
+                $view_box = "0 0 485.211 485.211";
+	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($style1, $style2, $view_box).") center/50px 50px no-repeat ".$mcl_options['color'].";";
+            } elseif ($get_email_phone['call_me_now'] == 'phone' && $get_email_phone['display_button']) {
+	            $style1 = "M375.7,332.5c-19.3-19.3-40-35.6-40-35.6l-30.2,30.2L184.9,206.4l30.2-30.2c0,0-16.3-20.7-35.6-40 c-19.3-19.3-40-35.6-40-35.6s-36.1,33.2-38.6,59.6c-3.3,35.3,34.1,99.5,92.8,158.1s122.8,96,158.1,92.8 c26.4-2.4,59.6-38.6,59.6-38.6S395.1,351.9,375.7,332.5z";
+	            $style2 = "";
+	            $view_box = "0 0 512 512";
+	            $credits .= "background:url(data:image/svg+xml;base64,".loadsvg($style2, $style1, $view_box).") center/50px 50px no-repeat ".$mcl_options['color'].";";
             }
 
             $credits .= "}" . $button_extra . "}";
@@ -87,123 +216,28 @@ if(get_option('mcl') && !is_admin()) {
 
         add_action('wp_head', 'mcl_top');
 
+	    /**
+	     * bottom part.
+	     */
         function mcl_bottom() {
-            $alloptions = get_option('mcl');
-            date_default_timezone_set('Australia/Brisbane');
-            $callmenow = true;
 
-            $start_time = $finish_time = 0;
+	        $get_email_phone = check_email_phone();
 
-            switch (date('N')) {
-                case 1:
-                    $monday = '';
-                    if ($alloptions['monday']) {
-                        $monday = explode('-', $alloptions['monday']);
-                        $start_time = strtotime('today ' . trim($monday[0]));
-                        $finish_time = strtotime('today ' . trim($monday[1]));
-                    }
-                    break;
-                case 2:
-                    $tuesday = '';
-                    if ($alloptions['tuesday']) {
-                        $tuesday = explode('-', $alloptions['tuesday']);
-                        $start_time = strtotime('today ' . trim($tuesday[0]));
-                        $finish_time = strtotime('today ' . trim($tuesday[1]));
-                    }
-                    break;
-                case 3:
-                    $wednesday = '';
-                    if ($alloptions['wednesday']) {
-                        $wednesday = explode('-', $alloptions['wednesday']);
-                        $start_time = strtotime('today ' . trim($wednesday[0]));
-                        $finish_time = strtotime('today ' . trim($wednesday[1]));
-                    }
-                    break;
-                case 4:
-                    $thursday = '';
-                    if ($alloptions['thursday']) {
-                        $thursday = explode('-', $alloptions['thursday']);
-                        $start_time = strtotime('today ' . trim($thursday[0]));
-                        $finish_time = strtotime('today ' . trim($thursday[1]));
-                    }
-                    break;
-                case 5:
-                    $friday = '';
-                    if ($alloptions['friday']) {
-                        $friday = explode('-', $alloptions['friday']);
-                        $start_time = strtotime('today ' . trim($friday[0]));
-                        $finish_time = strtotime('today ' . trim($friday[1]));
-                    }
-
-                    break;
-                case 6:
-                    $saturday = '';
-                    if ($alloptions['saturday']) {
-                        $saturday = explode('-', $alloptions['saturday']);
-                        $start_time = strtotime('today ' . trim($saturday[0]));
-                        $finish_time = strtotime('today ' . trim($saturday[1]));
-                    }
-                    break;
-                case 7:
-                    $sunday = '';
-                    if ($alloptions['sunday']) {
-                        $sunday = explode('-', $alloptions['sunday']);
-                        $start_time = strtotime('today ' . trim($sunday[0]));
-                        $finish_time = strtotime('today ' . trim($sunday[1]));
-                    }
-                    break;
-
-            }
-
-            $holidays = array_map('trim', explode(',', $alloptions['holiday']));
-            $today_day = date('d/m');
-            $current_time = strtotime('now');
-
-            if(isset($alloptions['display']) && $alloptions['display'] != "") {
-                $display = explode(',', str_replace(' ', '' ,$alloptions['display']));
-                $limited = 1;
-            } else {
-                $limited = 0;
-            }
-
-            if (in_array($today_day, $holidays) || $current_time >= $finish_time || $current_time <= $start_time) {
-                $callLink = '';
-            ?>
-            <?php
-                $contact_form = isset($alloptions['emailafterhour']) ? $alloptions['emailafterhour'] : '';
-                if ($contact_form) :
-            ?>
-            <a href="#call-me-back" id="call_link" class="call-me-back-button"><img width="40px" class="call_link_image" src= "<?php echo MCL_PLUGIN_URL; ?>/email.png" alt="" /></span></a>
-            <div id="call-me-back" class="call-me-back-popup mfp-hide" >
-                <?php echo do_shortcode($contact_form); ?>
-            </div>
-            <?php endif; ?>
-
-            <?php
-                $callmenow = false;
-            } else {
-                $callLink = '<a href="tel:'.$alloptions['number'].'" id="call_link"><img width="40px" class="call_link_image" src= "<?php echo MCL_PLUGIN_URL; ?>/phone.png" alt="" /></a>';
-            }
-
-            if($limited) {
-                if(is_single($display) || is_page($display)) {
-                    echo $callLink;
-                }
-            } else {
-                echo $callLink;
+	        if ($get_email_phone['call_me_now'] != 'noaction' && $get_email_phone['display_button']) {
+                echo $get_email_phone['call_link'];
             }
 
             wp_deregister_script('mcl-js');
-            wp_register_script('mcl-js', MCL_PLUGIN_URL . '/mcl.js', false, '0.0.1');
+            wp_register_script('mcl-js', MCL_PLUGIN_URL . '/assets/mcl.js', false, '0.0.1');
             wp_enqueue_script('mcl-js');
 
 	        wp_deregister_style('mcl-css');
-	        wp_register_style('mcl-css', MCL_PLUGIN_URL . '/mcl.css', false, '0.0.1');
+	        wp_register_style('mcl-css', MCL_PLUGIN_URL . '/assets/mcl.css', false, '0.0.1');
 	        wp_enqueue_style('mcl-css');
 
-            if (!$callmenow) {
+            if ($get_email_phone['call_me_now'] == 'email') {
                 wp_deregister_style('link-style');
-                wp_register_style('link-style', MCL_PLUGIN_URL . '/link_style.css', false, '0.0.1');
+                wp_register_style('link-style', MCL_PLUGIN_URL . '/assets/link_style.css', false, '0.0.1');
                 wp_enqueue_style('link-style');
             }
         }
@@ -227,21 +261,29 @@ if(get_option('mcl') && !is_admin()) {
     }
     add_action('init', 'mcl_get_scripts');
 
-
+	/**
+	 * load a svg icon and setting the background
+	 *
+	 * @param $button_phone_icon_path_d1
+	 * @param $button_phone_icon_path_d2
+	 * @param $button_phone_viewbox
+	 *
+	 * @return string
+	 *
+	 */
 	function loadsvg(
-	        $button_color,
-            $button_phone_icon_path_bg = "M256,7.9C117.4,7.9,5,119.8,5,257.9c0,52.3,16.1,100.8,43.6,140.9l-33,98.5l98.9-32.8
-	c40.3,27.4,89,43.5,141.4,43.5c138.6,0,251-111.9,251-250C507,119.8,394.6,7.9,256,7.9z",
-            $button_phone_icon_path="M7.104 13.032l6.504-6.505c0.896-0.895 2.334-0.678 3.1 0.35l5.563 7.8 c0.738 1 0.5 2.531-0.36 3.426l-4.74 4.742c2.361 3.3 5.3 6.9 9.1 10.699c3.842 3.8 7.4 6.7 10.7 9.1 l4.74-4.742c0.897-0.895 2.471-1.026 3.498-0.289l7.646 5.455c1.025 0.7 1.3 2.2 0.4 3.105l-6.504 6.5 c0 0-11.262 0.988-25.925-13.674C6.117 24.3 7.1 13 7.1 13") {
-//		$phone_icon = '<path d="M256,7.9C117.4,7.9,5,119.8,5,257.9c0,52.3,16.1,100.8,43.6,140.9l-33,98.5l98.9-32.8
-//	c40.3,27.4,89,43.5,141.4,43.5c138.6,0,251-111.9,251-250C507,119.8,394.6,7.9,256,7.9z" fill="'.$button_color.'"/><path d="M375.7,332.5c-19.3-19.3-40-35.6-40-35.6l-30.2,30.2L184.9,206.4l30.2-30.2c0,0-16.3-20.7-35.6-40
-//	c-19.3-19.3-40-35.6-40-35.6s-36.1,33.2-38.6,59.6c-3.3,35.3,34.1,99.5,92.8,158.1s122.8,96,158.1,92.8
-//	c26.4-2.4,59.6-38.6,59.6-38.6S395.1,351.9,375.7,332.5z" fill="#fff"/>';
-//		$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 60">' . $phone_icon . '</svg>';
-//		return base64_encode($svg_icon);
+            $button_phone_icon_path_d1,
+            $button_phone_icon_path_d2,
+            $button_phone_viewbox
+        ) {
+	    if ($button_phone_icon_path_d2) {
+		    $button_phone_icon_path = "<path d='". $button_phone_icon_path_d1 ."' fill=''/><path d='". $button_phone_icon_path_d2 ."' fill='#fff'/>";
+        } else {
+	        $button_phone_icon_path = "<path d='". $button_phone_icon_path_d1 ."' fill=''/>";
+        }
 
-		$phone_icon = '<path d= fill="' . $button_phone_icon_path_bg . '"' .$button_color.'"/><path d="'. $button_phone_icon_path .'" fill="#fff"/>';
-		$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60 60">' . $phone_icon . '</svg>';
+		$svg_icon = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="' . $button_phone_viewbox . '">' . $button_phone_icon_path . '</svg>';
+
 		return base64_encode($svg_icon);
 	}
 }

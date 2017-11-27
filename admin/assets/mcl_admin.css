@@ -47,6 +47,12 @@ p.submit,
     background-color: #ffdbdb !important;
 }
 
+label.description {
+    font-style: italic;
+    color: #666;
+    font-size: 14px;
+}
+
 @media screen and (min-width: 960px) {
     .radio-item {
         margin: 5px 0;

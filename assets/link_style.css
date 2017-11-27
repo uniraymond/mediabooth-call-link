@@ -20,7 +20,18 @@
     #call-me-button {
         background-color: #059AE5;
     }
+
     a#callnowbutton {
         background-color: #059AE5;
     }
+
+}
+
+.mfp-close-btn-in #call-me-back .mfp-close {
+    color: #FFF;
+    top: -30px;
+}
+
+#call-me-back input.wpcf7-submit {
+    background-color: #585858;
 }
