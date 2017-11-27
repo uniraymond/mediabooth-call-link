@@ -9,7 +9,7 @@ $mcl_options['active'] = isset($mcl_options['action']) ? 1 : 0;
 // plugin title
 $plugin_title = apply_filters('mcl_plugin_title', 'Mediabooth Call Link');
 // initial plugin
-$mcl_updated = set_basic_options();
+$mcl_updated = set_init_options();
 
 /**
  * add register
@@ -93,7 +93,7 @@ function mcl_admin_setting_page() {
         </tr>
 
         <tr valign="top" class="appearance">
-            <th scope="row">Limit appearance:</th>
+            <th scope="row">Limit appearance:<br><div><span class="small description"><small>eg: 1,3,5</small></span></div></th>
             <td><?php echo $mcl_option_display; ?>
                 <input type="text" name="mcl[display]" value="<?php echo $mcl_option_display; ?>" />
                 <p class="description">Add IDs such as (1,4,5) of the posts or pages, leave empty for displaying on all of pages.</p>
@@ -188,7 +188,7 @@ function mcl_get_options() { // Checking and setting the default options
     return $mcl_options;
 }
 
-function set_basic_options() {
+function set_init_options() {
     if(!array_key_exists('version', get_option('mcl'))) {
         $mcl_options = get_option('mcl');
         $mcl_options['active'] = isset($mcl_options['active']) ? 1 : 0;
